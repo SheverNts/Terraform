@@ -1,0 +1,6 @@
+iam_default=""
+default_key=""
+vpc_id=""
+aws_region="us-east-1"
+environment=""
+host_type="aplication"
