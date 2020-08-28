@@ -1,26 +1,36 @@
 module "vpc" {
-    source = "./vpc"
-    vpc_cidr = "10.0.0.0/16"
-    environment = "production"
-    group_id = "prod-2"
-    subnet_cidr = ["10.0.1.0/24", "10.0.2.0/24" ]
-    availability_zone = ["us-east-1a", "us-east-1b", "us-east-1c"]
+    source              = "./vpc"
+    vpc_cidr            = "${var.vpc_cidr}"
+    environment         = "${var.environment}"
+    group_id            = "${var.group_id}"
+    subnet_cidr         = "${var.subnet_cidr}"
+    availability_zone   = "${var.availability_zone}"
 }
 
 
 
 module "aurora" {
-    source = "./rds"
-    identifier_prefix               = "test-aurora"
-    engine                          = "aurora"
-    engine_version                  = "5.6.10a"
+    source                          = "./rds"
+    identifier_prefix               = "${var.aurora["identifier_prefix"]}"
+    engine                          = "${var.aurora["engine"]}"
+    engine_version                  = "${var.aurora["engine_version"]}"
     vpc_id                          = "${module.vpc_id}"
     subnets                         = "${module.subnet_ids}"
-    allowed_cidr_blocks             = []"10.0.0.0/16"]
-    instance_type                   = "db.r4.large"
-    apply_immediately               = true
-    db_parameter_group_name         = "default"
-    db_cluster_parameter_group_name = "default"
-    environment = "production"
-    group_id = "prod-2"
+    allowed_cidr_blocks             = "${var.aurora["allowed_cidr_blocks"]}"
+    instance_type                   = "${var.aurora["instance_type"]}"
+    apply_immediately               = "${var.aurora["apply_immediately"]}"
+    db_parameter_group_name         = "${var.aurora["db_parameter_group_name"]}"
+    db_cluster_parameter_group_name = "${var.aurora["db_cluster_parameter_group_name"]}"
+    environment                     = "${var.environment}"
+    group_id                        = "${var.group_id}"
+}
+
+
+module "eks" {
+    source                          = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git"
+    cluster_name                    = "${var.cluster_name}"
+    cluster_version                 = "${var.cluster_version}"
+    subnets                         = "${module.subnet_ids}"
+    vpc_id                          = "${module.vpc_id}"
+    worker_groups                   = "${var.worker_groups}"
 }
