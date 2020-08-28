@@ -38,8 +38,6 @@ resource "aws_subnet" "main" {
 }
 
 
-
-
 resource "aws_route_table" "route" {
   vpc_id = "${aws_vpc.main.id}"
 
@@ -54,7 +52,6 @@ tags {
     host_type   = "${var.host_type}"
   }
 }
-
 
 
 resource "aws_route_table_association" "subnet_public" {
