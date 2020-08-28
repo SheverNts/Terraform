@@ -9,4 +9,18 @@ module "vpc" {
 
 
 
-
+module "aurora" {
+    source = "./rds"
+    identifier_prefix               = "test-aurora"
+    engine                          = "aurora"
+    engine_version                  = "5.6.10a"
+    vpc_id                          = "${module.vpc_id}"
+    subnets                         = "${module.subnet_ids}"
+    allowed_cidr_blocks             = []"10.0.0.0/16"]
+    instance_type                   = "db.r4.large"
+    apply_immediately               = true
+    db_parameter_group_name         = "default"
+    db_cluster_parameter_group_name = "default"
+    environment = "production"
+    group_id = "prod-2"
+}
